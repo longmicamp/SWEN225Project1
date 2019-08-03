@@ -48,13 +48,22 @@ public class Player implements Piece {
         this.suggestion = suggestion;
     }
 
+    public void printHand(){
+
+        for(int a = 0; a< hand.size();a++){
+            System.out.println(hand.get(a));
+        }
+    }
+
+
     @Override
     public Location getloc() {
         return loc;
     }
 
     @Override
-    public void setLoc() {
+    public void setLoc(Location loc) {
+
         this.loc = loc;
     }
 }

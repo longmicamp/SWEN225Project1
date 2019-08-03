@@ -1,4 +1,7 @@
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -61,11 +64,62 @@ public class Game {
         MakeMurderer();
         Makedeck();
         DrawCards();
+        PlayersTurns(players.get(1));
+
+//        while(gamewon == false){
+//            for(int a = 0; a < players.size(); a++){
+//                PlayersTurns(players.get(a));
+//
+//            }
+
+        }
 
 
 
 
-         
+
+
+
+        public void PlayersTurns(Player player){
+            int RoleNums = (int) (Math.random()*12+1)-1;
+            if(RoleNums <3)RoleNums = 3;
+
+
+            System.out.println("It is your turn to move "+player.getName()+ ". You have "+ RoleNums + " moves left.");
+
+            JFrame frame = new JFrame("Key Listener");
+
+            Container contentPane = frame.getContentPane();
+
+            KeyListener listener = new KeyListener() {
+
+                @Override
+
+                public void keyPressed(KeyEvent event) {
+
+                    int key = event.getKeyCode();
+                    if (key == KeyEvent.VK_LEFT) {
+                        Location loca = player.getloc();
+                        loca.setX(loca.getX()-1);
+                        player.setLoc(loca);
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent event) {
+                }
+
+                @Override
+                public void keyTyped(KeyEvent event) {
+                }
+            };
+
+            JTextField textField = new JTextField();
+            textField.addKeyListener(listener);
+            contentPane.add(textField, BorderLayout.NORTH);
+            frame.pack();
+            frame.setVisible(true);
+
 
 
         }
@@ -137,26 +191,6 @@ public class Game {
 
 
 
-//    public void keyPressed(KeyEvent e) {
-//
-//        int key = e.getKeyCode();
-//
-//        if (key == KeyEvent.VK_LEFT) {
-//            dx = -2;
-//        }
-//
-//        if (key == KeyEvent.VK_RIGHT) {
-//            dx = 2;
-//        }
-//
-//        if (key == KeyEvent.VK_UP) {
-//            dy = -2;
-//        }
-//
-//        if (key == KeyEvent.VK_DOWN) {
-//            dy = 2;
-//        }
-//    }
 
 
     public static void main (String Args[]){

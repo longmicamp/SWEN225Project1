@@ -5,7 +5,7 @@ public interface Piece {
 
 
 
-   public void setLoc();
+   public void setLoc(Location loc);
 
 
 

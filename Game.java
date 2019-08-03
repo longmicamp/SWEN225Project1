@@ -59,7 +59,9 @@ public class Game {
         reader.close();
 
         MakeMurderer();
+        Makedeck();
         DrawCards();
+
 
 
 
@@ -75,8 +77,25 @@ public class Game {
 
         public void DrawCards() {
 
-            for (int a = 0; a < players.size(); a++) {
-                players.get(a).addCard();
+        for(int b = 0; b<Solution.size();b++){
+            deck.remove(Solution.get(b));
+        }
+
+            int player = 0;
+            while (deck.size() >0){
+                int random = (int) (Math.random()*deck.size()+1)-1;
+                players.get(player).addCard(deck.get(random));
+                deck.remove(random);
+                if(player == players.size()-1){
+                    player = 0;
+                }
+                else{
+                    player++;
+                }
+
+
+
+
 
             }
 

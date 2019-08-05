@@ -1,3 +1,5 @@
+    import com.sun.corba.se.impl.ior.iiop.MaxStreamFormatVersionComponentImpl;
+
     import javax.swing.*;
     import java.awt.*;
     import java.awt.event.KeyEvent;
@@ -44,31 +46,16 @@
 
         //randomly put weapons in rooms at beginning of game
         public void roomWeapon() {
-            for(int a= 0; a<roomNames.size();a++) {
-                if(roomNames.get(a)!="HALL") {
+            for (int a = 0; a < roomNames.size(); a++) {
+                if (roomNames.get(a) != "HALL") {
                     Room room = new Room(roomNames.get(a));
                     rooms.add(room);
                 }
             }
-            for(int a = 0; a<weaponNames.size();a++) {
+            for (int a = 0; a < weaponNames.size(); a++) {
                 rooms.get(a).setWeapon(weaponNames.get(a));
             }
 
-            System.out.println("----------------------------------");
-            System.out.printf("%-15S %-25S ","   | ROOM |", "   | WEAPON |");
-            System.out.println();
-            System.out.println("----------------------------------");
-            for(int a = 0; a<rooms.size();a++) {
-                if(rooms.get(a).getWeapon()!= null) {
-                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   " +rooms.get(a).getWeapon());
-
-                }
-
-                else {
-                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   Currently Empty");
-                }
-            }
-            System.out.println("----------------------------------");
         }
 
         public void printTitle(){
@@ -297,13 +284,7 @@
                 if (RoomEnum.values()[b].toString().equals(currentRoom)) {
                     Room = RoomEnum.values()[b];
                 }
-                for (int i = 0; i < rooms.size(); i++) {
-
-                    System.out.println(rooms.get(i).getRoom()+  "   "+ currentRoom);
-                    if (rooms.get(i).getRoom().equals(currentRoom)) {
-                        rooms.get(i).setWeapon(Weapon.toString());
-                    }
-                }
+               
             }
 
             System.out.println("You selected these three things as your suggestion "+Player.toString() + "  " + Room.toString() + "   " + Weapon.toString());

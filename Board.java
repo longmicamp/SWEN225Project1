@@ -24,69 +24,69 @@ public class Board {
 
                     switch (b[a]) {
                         case "/":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, null);
                             break;
                         case "K":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, "KITCHEN");
                             break;
                         case "H":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, null);
                             break;
                         case "B":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false,"BALLROOM");
                             break;
                         case "C":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, "CONSERVATORY");
                             break;
                         case "D":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, "DININGROOM");
                             break;
                         case "R":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false,"BILLIARDROOM");
                             break;
                         case "L":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, "LIBRARY");
                             break;
                         case "U":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false, "LOUNGE");
                             break;
                         case "Z":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false,"HALL");
                             break;
                         case "S":
-                            board[a][row] = new Position(loca, b[a], false);
+                            board[a][row] = new Position(loca, b[a], false,"STUDY");
                             break;
                         case "1":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
                             PlayerPos.add(new Location(a, row));
                             break;
                         case "2":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
                             PlayerPos.add(new Location(a, row));
                             break;
                         case "3":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
                             PlayerPos.add(new Location(a, row));
                             break;
                         case "4":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
                             PlayerPos.add(new Location(a, row));
                             break;
                         case "5":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
                             PlayerPos.add(new Location(a, row));
                             break;
                         case "6":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
                             PlayerPos.add(new Location(a, row));
                             break;
                         case "V":
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "H", false,null);
 
                             break;
                         case "O":
 
-                            board[a][row] = new Position(loca, "H", false);
+                            board[a][row] = new Position(loca, "O", false,null);
                             break;
                     }
                 }
@@ -123,8 +123,8 @@ public class Board {
     }
 
 
-    public void setBoard(Location loc, String name, boolean Occupy) {
-        board[loc.getX()][loc.getY()] = new Position(loc, name, Occupy);
+    public void setBoard(Location loc, String name, boolean Occupy, String rn) {
+        board[loc.getX()][loc.getY()] = new Position(loc, name, Occupy, rn);
     }
 
     public Position getBoardLocation(int a, int b) {
@@ -147,9 +147,17 @@ public class Board {
     public Location getPlayerPos(int a){
         return PlayerPos.get(a);
     }
+
+    public ArrayList<Location> getPlayerLocations(){
+        return PlayerPos;
+    }
     public void setOccupied(Location a){
 
         board[a.getX()][a.getY()].setOccupied(true);
+    }
+    public void setNotoccupied(Location a){
+
+        board[a.getX()][a.getY()].setOccupied(false);
     }
 
 

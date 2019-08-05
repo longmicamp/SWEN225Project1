@@ -13,17 +13,27 @@ public class Position {
 
     private Location loc;
     private String type;
+    private String RoomName;
     private String name;
     private boolean occupied;
 
 
 
 
-    public Position(Location Loc, String type, boolean occupy) {
+    public Position(Location Loc, String type, boolean occupy, String rn) {
+        this.RoomName = rn;
         this.loc = Loc;
         this.type = type;
         this.occupied = occupy;
         this.name = "";
+    }
+
+    public String getRoomName() {
+        return RoomName;
+    }
+
+    public void setRoomName(String roomName) {
+        RoomName = roomName;
     }
 
     public boolean isOccupied(){

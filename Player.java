@@ -12,6 +12,17 @@ public class Player implements Piece {
     private boolean suggestion;
 
 
+
+    private boolean madeaccusation = false;
+
+    public boolean isMadeaccusation() {
+        return madeaccusation;
+    }
+
+    public void setMadeaccusation(boolean madeaccusation) {
+        this.madeaccusation = madeaccusation;
+    }
+
     public Player(Location loc, String name, ArrayList<Card> hand, boolean suggestion) {
         this.loc = loc;
         this.name = name;
@@ -24,6 +35,8 @@ public class Player implements Piece {
     public String getName() {
         return name;
     }
+
+
 
     public void setName(String name) {
         this.name = name;
@@ -65,5 +78,12 @@ public class Player implements Piece {
     public void setLoc(Location loc) {
 
         this.loc = loc;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

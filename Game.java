@@ -3,6 +3,7 @@
     import java.awt.event.KeyEvent;
     import java.awt.event.KeyListener;
     import java.lang.reflect.Array;
+    import java.sql.SQLOutput;
     import java.util.ArrayList;
     import java.util.List;
     import java.util.Scanner;
@@ -10,7 +11,8 @@
     import java.util.stream.Collectors;
     import java.util.stream.Stream;
 
-    public class Game {
+    public class Game{
+
 
         enum CharacterEnum implements Card {
             MrsWhite, MrGreen, MrsPeacock, ProfessorPlum, ColonelMustard, MissScarlett;
@@ -35,6 +37,7 @@
 
         ArrayList<Card> deck = new ArrayList<Card>();
         ArrayList<Player> players = new ArrayList<Player>();
+        Player winningplayer = null;
         boolean gamewon = false;
         ArrayList<Card> Solution = new ArrayList<Card>();
         Board board = new Board();
@@ -82,6 +85,8 @@
             System.out.println("BY CAMPBELL 'LILNUT' LONGMIRE & NIKHIL 'BIGNUT' REDDY \n");
         }
 
+
+
         public void playClue() {
 
 
@@ -89,17 +94,17 @@
             printTitle();
             board.makeBoard();
 
-    //        Scanner reader = new Scanner(System.in);
-    //        System.out.println("Welcome to Cluedo, please enter the number of players you would like to play with (between 3 and 6): ");
-    //        int n = reader.nextInt();
-    //        while (n<3 || n>6){
-    //            System.out.println("You did not enter a number between 3 and 6, please try again:");
-    //            n = reader.nextInt();
-    //        }
-            int m = 4;
-            while (m - 1 >= 0) {
-                Location loc = board.getPlayerPos(m - 1);           //Put players on the board
-                String name = CharacterEnum.values()[m - 1].toString();
+            Scanner reader = new Scanner(System.in);
+            System.out.println("Welcome to Cluedo, please enter the number of players you would like to play with (between 3 and 6): ");
+            int n = reader.nextInt();
+            while (n<3 || n>6){
+                System.out.println("You did not enter a number between 3 and 6, please try again:");
+                n = reader.nextInt();
+            }
+
+            while (n - 1 >= 0) {
+                Location loc = board.getPlayerPos(n);         //Put players on the board
+                String name = CharacterEnum.values()[n - 1].toString();
                 Position pos = board.getPos(loc);
                 board.setPosName(loc, name);
                 board.setOccupied(loc);
@@ -109,98 +114,145 @@
                 players.add(play);
 
 
-                //  n--;
-                m--;
+                n--;
+
             }
 
             board.printBoard();
             roomWeapon();
-            //reader.close();
+
 
             MakeMurderer();
             Makedeck();
             DrawCards();
-          //  players.get(1).setmovesLeft(3);
-            makeAccusation(players.get(1));
 
-    //        while(gamewon == false) {
-    //            for (int a = 0; a < players.size(); a++) {
-    //                PlayersTurns(players.get(a));
-    //
-    //            }
-    //        }
+            while(gamewon == false) {
+                for (Player player : players) {
+                    if(player.isMadeaccusation() == false) {
+                        printWeapons();
+                        PlayersTurns(player);
+                    }
+                }
+            }
+        System.out.println("Congrats! "+ winningplayer+" has won the game, you the champ!");
 
+        }
+
+        public void printWeapons(){
+
+            System.out.println("----------------------------------");
+            System.out.printf("%-15S %-25S ","   | ROOM |", "   | WEAPON |");
+            System.out.println();
+            System.out.println("----------------------------------");
+            for(int a = 0; a<rooms.size();a++) {
+                if(rooms.get(a).getWeapon()!= null) {
+                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   " +rooms.get(a).getWeapon());
+
+                }
+
+                else {
+                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   Currently Empty");
+                }
+            }
+            System.out.println("----------------------------------");
         }
 
 
         public void PlayersTurns(Player player) {
 
-            JFrame frame = new JFrame("Key Listener");
-
-            Container contentPane = frame.getContentPane();
-
-            KeyListener listener = new KeyListener() {
+            int roledice = (int) (Math.random() * 10) + 2;
 
 
-                @Override
-                public void keyPressed(KeyEvent event) {
+            while (roledice > 0) {
 
-
+                System.out.println("You have "+roledice+ " moves left "+ player);
+                Location loc = player.getloc();
+                Location newloc = null;
+                Scanner reader = new Scanner(System.in);
+                System.out.println("What direction would you like to move? select from w,a,s,d then click enter ");
+                String n = reader.next();
+                while(!n.equals("a")&&!n.equals("w")&&!n.equals("s")&&!n.equals("d")){
+                    System.out.println("That is not a valid input, please try again...");
+                    n = reader.next();
                 }
 
-                @Override
-                public void keyReleased(KeyEvent event) {
+                if (n.equals("a")) {
+                    System.out.println("Left");
+                    int x = loc.getX() - 1;
+                    newloc = new Location(x, loc.getY());
+                } else if (n.equals("d")) {
+                    System.out.println("Right");
+                    int x = loc.getX() + 1;
+                    newloc = new Location(x, loc.getY());
+                } else if (n.equals("s")) {
+                    System.out.println("Down");
+                    int x = loc.getY() + 1;
+                    newloc = new Location(loc.getX(), x);
+                } else if (n.equals("w")) {
+                    System.out.println("Up");
+                    int x = loc.getY() - 1;
+                    newloc = new Location(loc.getX(), x);
+                }
+                System.out.println(canMove(player,newloc));
+                if (canMove(player, newloc) ) {
 
 
-                    int key = event.getKeyCode();
+                    board.setPosName(loc, "");
+                    board.setNotoccupied(loc);
+                    board.setPosName(newloc, player.getName());
+                    board.setOccupied(newloc);
+                    player.setLoc(newloc);
+                    board.printBoard();
+                    if(board.getPos(player.getloc()).getRoomName()!=null){
+                        System.out.println("You are in a room, would you like to make a suggestion of accusation? y/n");
+                        String m = reader.next();
+                        while (!m.equals("y") && !m.equals("n")){
+                            System.out.println("Please select a valid input. y or n");
+                            m = reader.next();
+                        }
+                        if(m.equals("y")){
+                            System.out.println("Select 'a' for accusation, 's' for suggestion, or 'c' for cancel:");
+                             String z = reader.next();
+                            while (!z.equals("c") && !z.equals("a") && !z.equals("s")) {
+                                System.out.println("Please select a valid input. a or s or a");
+                                z = reader.next();
+                            }
+                            if(z.equals("c")){
+                                System.out.println("You canceled your suggestion and accusation, continuing game...");
+                            }
+                            else if(z.equals("a")){
+                                makeAccusation(player);
+                                if(player.isMadeaccusation() == true){
+                                    roledice = 0;
+                                    break;
+                                }
+                                else if(gamewon){
+                                    break;
+                                }
+                            }
+                            else if(z.equals("s")){
+                                makeSuggestion(player);
+                            }
 
-                    Location loc = player.getloc();
-                    Location newloc = null;
-
-                    if (key == 37) {
-                        int x = loc.getX() - 1;
-                        newloc = new Location(x, loc.getY());
-                    } else if (key == 39) {
-                        int x = loc.getX() + 1;
-                        newloc = new Location(x, loc.getY());
-                    } else if (key == 40) {
-                        int x = loc.getY() + 1;
-                        newloc = new Location(loc.getX(), x);
-                    } else if (key == 38) {
-                        int x = loc.getY() - 1;
-                        newloc = new Location(loc.getX(), x);
+                        }
+                        else if(m.equals("n")){
+                            System.out.println("You have decided not to make an accusation or suggestion, you may continue");
+                        }
                     }
-                    if (canMove(player, newloc)) {
 
-                        board.setPosName(loc, "");
-                        board.setNotoccupied(loc);
-                        board.setPosName(newloc, player.getName());
-                        board.setOccupied(newloc);
-                        player.setLoc(newloc);
-                        board.printBoard();
 
-                    }
 
 
                 }
 
-
-
-                @Override
-                public void keyTyped(KeyEvent event) {
-
-                }
-            };
-
-
-            JTextField textField = new JTextField();
-            textField.addKeyListener(listener);
-            contentPane.add(textField, BorderLayout.NORTH);
-            frame.pack();
-            frame.setVisible(true);
+                roledice--;
+            }
 
 
         }
+
+
+
 
         public void makeSuggestion(Player player) {
             Location loc = player.getloc();
@@ -226,6 +278,7 @@
             }
             Card Weapon = WeaponEnum.values()[n];
 
+
             System.out.println("Who do you think did the murder? please select from the people on the screen");
             for (int a = 0; a < WeaponEnum.values().length; a++) {
                 System.out.println(a + ": " + CharacterEnum.values()[a].toString());
@@ -244,15 +297,20 @@
                 if (RoomEnum.values()[b].toString().equals(currentRoom)) {
                     Room = RoomEnum.values()[b];
                 }
+                for (int i = 0; i < rooms.size(); i++) {
+
+                    System.out.println(rooms.get(i).getRoom()+  "   "+ currentRoom);
+                    if (rooms.get(i).getRoom().equals(currentRoom)) {
+                        rooms.get(i).setWeapon(Weapon.toString());
+                    }
+                }
             }
 
-            System.out.println(Player.toString() + "  " + Room.toString() + "   " + Weapon.toString());
+            System.out.println("You selected these three things as your suggestion "+Player.toString() + "  " + Room.toString() + "   " + Weapon.toString());
 
             for (Player a : players) {
 
-                System.out.println(a.getName());
-                a.printHand();
-                System.out.println("");
+
 
                 if (a.getHand().contains(Player)) {
                     System.out.println(a.getName() + " has card " + Player.toString());
@@ -319,6 +377,8 @@
 
                 if(Solution.contains(Player)&& Solution.contains(Room)&&Solution.contains(Weapon)){
                     System.out.println("You Win : "+player.getName());
+                    gamewon = true;
+                    winningplayer = player;
 
             }
                 else{
@@ -327,6 +387,7 @@
                     board.setNotoccupied(player.getloc());
                     board.setPosName(player.getloc(), "");
                     board.printBoard();
+                    player.setMadeaccusation(true);
                 }
 
         }
@@ -337,15 +398,15 @@
 
         public boolean canMove(Player player, Location loc) {
             Location loc1 = player.getloc();
-
+            if(loc.getX() == 24 ||loc.getX()==-1||loc.getY()==25||loc.getY()==-1){
+                return false;
+            }
             if(board.getPos(loc).getType().equals("/")) return false;
 
 
             if(board.getPos(loc1).getType().equals("O")||board.getPos(loc).getType().equals("O")) return true;
 
-          if(loc.getX() == 24 ||loc.getX()==-1||loc.getY()==25||loc.getY()==-1){
-              return false;
-          }
+
 
             if ((board.getPos(loc).getType().equals(board.getPos(loc1).getType()))&&(!board.getPos(loc).isOccupied())) {
                 return true;

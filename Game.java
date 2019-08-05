@@ -4,8 +4,11 @@
     import java.awt.event.KeyListener;
     import java.lang.reflect.Array;
     import java.util.ArrayList;
+    import java.util.List;
     import java.util.Scanner;
     import java.util.*;
+    import java.util.stream.Collectors;
+    import java.util.stream.Stream;
 
     public class Game {
 
@@ -21,6 +24,14 @@
             KITCHEN, HALL, STUDY, LOUNGE, CONSERVATORY, BILLIARDROOM, LIBRARY, DININGROOM,BALLROOM;
         }
 
+        public List<Enum> roomList = Arrays.asList(RoomEnum.values());
+        List<String> roomNames = Stream.of(RoomEnum.values()).map(Enum::name).collect(Collectors.toList());
+
+        public List<Enum> weaponList = Arrays.asList(WeaponEnum.values());
+        List<String> weaponNames = Stream.of(WeaponEnum.values()).map(Enum::name).collect(Collectors.toList());
+
+        public ArrayList<Room> rooms = new ArrayList<Room>();
+
 
         ArrayList<Card> deck = new ArrayList<Card>();
         ArrayList<Player> players = new ArrayList<Player>();
@@ -28,12 +39,54 @@
         ArrayList<Card> Solution = new ArrayList<Card>();
         Board board = new Board();
 
+        //randomly put weapons in rooms at beginning of game
+        public void roomWeapon() {
+            for(int a= 0; a<roomNames.size();a++) {
+                if(roomNames.get(a)!="HALL") {
+                    Room room = new Room(roomNames.get(a));
+                    rooms.add(room);
+                }
+            }
+            for(int a = 0; a<weaponNames.size();a++) {
+                rooms.get(a).setWeapon(weaponNames.get(a));
+            }
+
+            System.out.println("----------------------------------");
+            System.out.printf("%-15S %-25S ","   | ROOM |", "   | WEAPON |");
+            System.out.println();
+            System.out.println("----------------------------------");
+            for(int a = 0; a<rooms.size();a++) {
+                if(rooms.get(a).getWeapon()!= null) {
+                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   " +rooms.get(a).getWeapon());
+
+                }
+
+                else {
+                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   Currently Empty");
+                }
+            }
+            System.out.println("----------------------------------");
+        }
+
+        public void printTitle(){
+            System.out.println("WELCOME TO ");
+            System.out.println(" ▄████▄      ██▓        █    ██    ▓█████    ▓█████▄     ▒█████  ");
+            System.out.println("▒██▀ ▀█     ▓██▒        ██  ▓██▒   ▓█   ▀    ▒██▀ ██▌   ▒██▒  ██▒");
+            System.out.println("▒▓█    ▄    ▒██░       ▓██  ▒██░   ▒███      ░██   █▌   ▒██░  ██▒");
+            System.out.println("▒▓▓▄ ▄██▒   ▒██░       ▓▓█  ░██░   ▒▓█  ▄    ░▓█▄   ▌   ▒██   ██░");
+            System.out.println("▒ ▓███▀ ░   ░██████▒   ▒▒█████▓    ░▒████▒   ░▒████▓    ░ ████▓▒░");
+            System.out.println("░ ░▒ ▒  ░   ░ ▒░▓  ░   ░▒▓▒ ▒ ▒    ░░ ▒░ ░    ▒▒▓  ▒    ░ ▒░▒░▒░ ");
+            System.out.println("  ░  ▒      ░ ░ ▒  ░   ░░▒░ ░ ░     ░ ░  ░    ░ ▒  ▒      ░ ▒ ▒░ ");
+            System.out.println("░             ░ ░       ░░░ ░ ░       ░       ░ ░  ░    ░ ░ ░ ▒  ");
+            System.out.println("░                                             ░                  ");
+            System.out.println("BY CAMPBELL 'LILNUT' LONGMIRE & NIKHIL 'BIGNUT' REDDY \n");
+        }
 
         public void playClue() {
 
 
 
-
+            printTitle();
             board.makeBoard();
 
     //        Scanner reader = new Scanner(System.in);
@@ -61,6 +114,7 @@
             }
 
             board.printBoard();
+            roomWeapon();
             //reader.close();
 
             MakeMurderer();
@@ -148,9 +202,9 @@
 
         }
 
-        public void makeSuggestion(Player player){
+        public void makeSuggestion(Player player) {
             Location loc = player.getloc();
-            Location newloc =new Location(23,3);
+            Location newloc = new Location(23, 3);
             board.setPosName(loc, "");
             board.setNotoccupied(loc);
             board.setPosName(newloc, player.getName());
@@ -161,24 +215,24 @@
 
             Scanner reader = new Scanner(System.in);
 
-            for(int a = 0; a<WeaponEnum.values().length;a++){
-                System.out.println(a+": "+WeaponEnum.values()[a].toString());
+            for (int a = 0; a < WeaponEnum.values().length; a++) {
+                System.out.println(a + ": " + WeaponEnum.values()[a].toString());
             }
             System.out.println("What Weapon do you think the Murder used? Select the number corresponding to weapon on screen");
             int n = reader.nextInt();
-            while(n > WeaponEnum.values().length-1 || n<0){
+            while (n > WeaponEnum.values().length - 1 || n < 0) {
                 System.out.println("You have entered an invalid number, please try again: ");
                 n = reader.nextInt();
             }
             Card Weapon = WeaponEnum.values()[n];
 
             System.out.println("Who do you think did the murder? please select from the people on the screen");
-            for(int a = 0; a<WeaponEnum.values().length;a++){
-                System.out.println(a+": "+CharacterEnum.values()[a].toString());
+            for (int a = 0; a < WeaponEnum.values().length; a++) {
+                System.out.println(a + ": " + CharacterEnum.values()[a].toString());
             }
             int m = reader.nextInt();
 
-            while(m > CharacterEnum.values().length-1 || m<0){
+            while (m > CharacterEnum.values().length - 1 || m < 0) {
                 System.out.println("You have entered an invalid number, please try again: ");
                 m = reader.nextInt();
             }
@@ -186,32 +240,33 @@
             Card Room = null;
 
             String currentRoom = board.getPos(player.getloc()).getRoomName();
-            for(int b = 0;b<RoomEnum.values().length;b++){
-                if(RoomEnum.values()[b].toString().equals(currentRoom)){
+            for (int b = 0; b < RoomEnum.values().length; b++) {
+                if (RoomEnum.values()[b].toString().equals(currentRoom)) {
                     Room = RoomEnum.values()[b];
                 }
             }
 
-            System.out.println(Player.toString()+"  "+Room.toString()+ "   "+Weapon.toString());
+            System.out.println(Player.toString() + "  " + Room.toString() + "   " + Weapon.toString());
 
-            for(Player a: players){
+            for (Player a : players) {
 
                 System.out.println(a.getName());
                 a.printHand();
                 System.out.println("");
 
-                if(a.getHand().contains(Player)){
+                if (a.getHand().contains(Player)) {
                     System.out.println(a.getName() + " has card " + Player.toString());
                 }
-                if(a.getHand().contains(Room)){
+                if (a.getHand().contains(Room)) {
                     System.out.println(a.getName() + " has card " + Room.toString());
                 }
-                if(a.getHand().contains(Weapon)){
+                if (a.getHand().contains(Weapon)) {
                     System.out.println(a.getName() + " has card " + Weapon.toString());
                 }
             }
 
         }
+
 
         public void makeAccusation(Player player){
 

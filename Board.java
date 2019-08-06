@@ -6,6 +6,11 @@ public class Board {
 
     public Position[][] board = new Position[24][25];
     private ArrayList<Location> PlayerPos = new ArrayList<Location>();
+    private ArrayList<Location> secretPath1 = new ArrayList<Location>();
+    private ArrayList<Location> secretPath2 = new ArrayList<Location>();
+
+
+
 
 
     public void makeBoard() {
@@ -25,6 +30,16 @@ public class Board {
                     switch (b[a]) {
                         case "/":
                             board[a][row] = new Position(loca, b[a], false, null);
+
+                            break;
+                        case ">":
+                            board[a][row] = new Position(loca, b[a], false, null);
+
+                            secretPath2.add(new Location(a,row));
+                            break;
+                        case "?":
+                            board[a][row] = new Position(loca, b[a], false, null);
+                            secretPath1.add(new Location(a,row));
                             break;
                         case "K":
                             board[a][row] = new Position(loca, b[a], false, "KITCHEN");
@@ -105,6 +120,21 @@ public class Board {
     }
 
 
+    public ArrayList<Location> getSecretPath1() {
+        return secretPath1;
+    }
+
+    public void setSecretPath1(ArrayList<Location> secretPath1) {
+        this.secretPath1 = secretPath1;
+    }
+
+    public ArrayList<Location> getSecretPath2() {
+        return secretPath2;
+    }
+
+    public void setSecretPath2(ArrayList<Location> secretPath2) {
+        this.secretPath2 = secretPath2;
+    }
 
     public void printBoard() {
         for (int a = 0; a < 25; a++) {

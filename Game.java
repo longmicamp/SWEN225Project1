@@ -1,4 +1,4 @@
-    import com.sun.corba.se.impl.ior.iiop.MaxStreamFormatVersionComponentImpl;
+
 
     import javax.swing.*;
     import java.awt.*;
@@ -28,13 +28,6 @@
             KITCHEN, HALL, STUDY, LOUNGE, CONSERVATORY, BILLIARDROOM, LIBRARY, DININGROOM,BALLROOM;
         }
 
-        public List<Enum> roomList = Arrays.asList(RoomEnum.values());
-        List<String> roomNames = Stream.of(RoomEnum.values()).map(Enum::name).collect(Collectors.toList());
-
-        public List<Enum> weaponList = Arrays.asList(WeaponEnum.values());
-        List<String> weaponNames = Stream.of(WeaponEnum.values()).map(Enum::name).collect(Collectors.toList());
-
-        public ArrayList<Room> rooms = new ArrayList<Room>();
 
 
         ArrayList<Card> deck = new ArrayList<Card>();
@@ -44,19 +37,7 @@
         ArrayList<Card> Solution = new ArrayList<Card>();
         Board board = new Board();
 
-        //randomly put weapons in rooms at beginning of game
-        public void roomWeapon() {
-            for (int a = 0; a < roomNames.size(); a++) {
-                if (roomNames.get(a) != "HALL") {
-                    Room room = new Room(roomNames.get(a));
-                    rooms.add(room);
-                }
-            }
-            for (int a = 0; a < weaponNames.size(); a++) {
-                rooms.get(a).setWeapon(weaponNames.get(a));
-            }
 
-        }
 
         public void printTitle(){
             System.out.println("WELCOME TO ");
@@ -106,7 +87,7 @@
             }
 
             board.printBoard();
-            roomWeapon();
+
 
 
             MakeMurderer();
@@ -116,7 +97,7 @@
             while(gamewon == false) {
                 for (Player player : players) {
                     if(player.isMadeaccusation() == false) {
-                        printWeapons();
+
                         PlayersTurns(player);
                     }
                 }
@@ -125,29 +106,12 @@
 
         }
 
-        public void printWeapons(){
 
-            System.out.println("----------------------------------");
-            System.out.printf("%-15S %-25S ","   | ROOM |", "   | WEAPON |");
-            System.out.println();
-            System.out.println("----------------------------------");
-            for(int a = 0; a<rooms.size();a++) {
-                if(rooms.get(a).getWeapon()!= null) {
-                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   " +rooms.get(a).getWeapon());
-
-                }
-
-                else {
-                    System.out.printf("%-15S %-25S \n", "   " +rooms.get(a).getRoom(),"   Currently Empty");
-                }
-            }
-            System.out.println("----------------------------------");
-        }
 
 
         public void PlayersTurns(Player player) {
 
-            int roledice = (int) (Math.random() * 10) + 2;
+            int roledice =(int) (Math.random() * 10) + 2;
 
 
             while (roledice > 0) {
@@ -182,15 +146,76 @@
                 }
                 System.out.println(canMove(player,newloc));
                 if (canMove(player, newloc) ) {
-
-
+                    System.out.println(player.getloc().getX());
+                    roledice--;
                     board.setPosName(loc, "");
                     board.setNotoccupied(loc);
                     board.setPosName(newloc, player.getName());
                     board.setOccupied(newloc);
                     player.setLoc(newloc);
                     board.printBoard();
-                    if(board.getPos(player.getloc()).getRoomName()!=null){
+
+                     if(board.getPos(player.getloc()).getType().equals(">")){
+
+                         System.out.println("Would you like to use the secret tunnel? y/n");
+                         String t = reader.next();
+                         while (!t.equals("y") && !t.equals("n")) {
+                             System.out.println("Please select a valid input. y or n");
+                             t = reader.next();
+                         }
+                         if(t.equals("y")){
+                             for (int i = 0; i < board.getSecretPath2().size(); i++) {
+                                 if(player.getloc().getX()!= board.getSecretPath2().get(i).getX()){
+                                     board.setPosName(player.getloc(), "");
+                                     board.setNotoccupied(player.getloc());
+                                     board.setPosName(board.getSecretPath2().get(i), player.getName());
+                                     board.setOccupied(board.getSecretPath2().get(i));
+                                     player.setLoc(board.getSecretPath2().get(i));
+                                     board.printBoard();
+                                     break;
+
+                                 }
+                             }
+                         }
+                         else{
+                             System.out.println("Okay, game will continue");
+                         }
+
+                    }
+                    if(board.getPos(player.getloc()).getType().equals("?")){
+
+                        System.out.println("Would you like to use the secret tunnel? y/n");
+                        String t = reader.next();
+                        while (!t.equals("y") && !t.equals("n")) {
+                            System.out.println("Please select a valid input. y or n");
+                            t = reader.next();
+                        }
+                        if(t.equals("y")){
+                            for (int i = 0; i < board.getSecretPath2().size(); i++) {
+                                System.out.println(player.getloc().getX()+"   "+board.getSecretPath1().get(i).getX());
+                                if(player.getloc().getX()!= board.getSecretPath1().get(i).getX()){
+                                    System.out.println(player.getloc().getX()!= board.getSecretPath1().get(i).getX());
+                                    board.setPosName(player.getloc(), "");
+                                    board.setNotoccupied(player.getloc());
+                                    board.setPosName(board.getSecretPath1().get(i), player.getName());
+                                    board.setOccupied(board.getSecretPath1().get(i));
+                                    player.setLoc(board.getSecretPath1().get(i));
+                                    board.printBoard();
+                                    break;
+
+                                }
+                            }
+                        }
+                        else{
+                            System.out.println("Okay, game will continue");
+                        }
+
+                    }
+                    if(board.getPos(player.getloc()).getType().equals("?")){
+                        System.out.println("Would you like to use the secret tunnel?");
+                    }
+                    if(board.getPos(player.getloc()).getRoomName()!=null&&player.isSuggestion()==false){
+                        player.setSuggestion(true);
                         System.out.println("You are in a room, would you like to make a suggestion of accusation? y/n");
                         String m = reader.next();
                         while (!m.equals("y") && !m.equals("n")){
@@ -227,29 +252,19 @@
                         }
                     }
 
-
-
-
                 }
-
-                roledice--;
             }
-
-
+            player.setSuggestion(false);
         }
 
 
 
 
         public void makeSuggestion(Player player) {
-            Location loc = player.getloc();
-            Location newloc = new Location(23, 3);
-            board.setPosName(loc, "");
-            board.setNotoccupied(loc);
-            board.setPosName(newloc, player.getName());
-            board.setOccupied(newloc);
-            player.setLoc(newloc);
-            board.printBoard();
+
+            System.out.println("These are your cards " + player.getName()+":");
+            player.printHand();
+            System.out.println("");
 
 
             Scanner reader = new Scanner(System.in);
@@ -277,6 +292,7 @@
                 m = reader.nextInt();
             }
             Card Player = CharacterEnum.values()[m];
+
             Card Room = null;
 
             String currentRoom = board.getPos(player.getloc()).getRoomName();
@@ -284,23 +300,25 @@
                 if (RoomEnum.values()[b].toString().equals(currentRoom)) {
                     Room = RoomEnum.values()[b];
                 }
-               
+
             }
 
             System.out.println("You selected these three things as your suggestion "+Player.toString() + "  " + Room.toString() + "   " + Weapon.toString());
 
             for (Player a : players) {
 
+                if(a != player) {
 
 
-                if (a.getHand().contains(Player)) {
-                    System.out.println(a.getName() + " has card " + Player.toString());
-                }
-                if (a.getHand().contains(Room)) {
-                    System.out.println(a.getName() + " has card " + Room.toString());
-                }
-                if (a.getHand().contains(Weapon)) {
-                    System.out.println(a.getName() + " has card " + Weapon.toString());
+                    if (a.getHand().contains(Player)) {
+                        System.out.println(a.getName() + " has card " + Player.toString());
+                    }
+                    if (a.getHand().contains(Room)) {
+                        System.out.println(a.getName() + " has card " + Room.toString());
+                    }
+                    if (a.getHand().contains(Weapon)) {
+                        System.out.println(a.getName() + " has card " + Weapon.toString());
+                    }
                 }
             }
 
@@ -309,14 +327,9 @@
 
         public void makeAccusation(Player player){
 
-            Location loc = player.getloc();
-            Location newloc =new Location(23,3);
-            board.setPosName(loc, "");
-            board.setNotoccupied(loc);
-            board.setPosName(newloc, player.getName());
-            board.setOccupied(newloc);
-            player.setLoc(newloc);
-            board.printBoard();
+            System.out.println("These are your cards " + player.getName()+":");
+            player.printHand();
+            System.out.println("");
 
             Scanner reader = new Scanner(System.in);
 
@@ -386,8 +399,8 @@
 
 
             if(board.getPos(loc1).getType().equals("O")||board.getPos(loc).getType().equals("O")) return true;
-
-
+            if(board.getPos(loc1).getType().equals(">")||board.getPos(loc).getType().equals(">")) return true;
+            if(board.getPos(loc1).getType().equals("?")||board.getPos(loc).getType().equals("?")) return true;
 
             if ((board.getPos(loc).getType().equals(board.getPos(loc1).getType()))&&(!board.getPos(loc).isOccupied())) {
                 return true;
